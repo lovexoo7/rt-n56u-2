@@ -75,6 +75,7 @@ struct nvram_pair router_defaults[] = {
 	{ "wan_hostname", "" },			/* WAN hostname */
 	{ "wan_vci", "" },			/* WAN vendor class identifier (OPT-60) */
 	{ "wan_ttl_fix", "0" },
+	{ "wan_ttl_value", "0" },
 	{ "wan_hwaddr_x", "" },
 	{ "wan_nat_x", "1" },
 	{ "wan_mtu", "1500" },
@@ -241,7 +242,7 @@ struct nvram_pair router_defaults[] = {
 	{ "wl_guest_macrule", "0" },
 	{ "wl_guest_mcs_mode", "0" },
 
-#if defined(USE_MT7615_AP)
+#if defined (USE_WID_5G) && USE_WID_5G==7615
 	{ "wl_band_steering", "0" },
 	{ "wl_mumimo", "1" },
 #endif
@@ -337,7 +338,7 @@ struct nvram_pair router_defaults[] = {
 	{ "rt_guest_macrule", "0" },
 	{ "rt_guest_mcs_mode", "0" },
 
-#if defined(USE_MT7615_AP)
+#if defined (USE_WID_2G) && USE_WID_2G==7615
 	{ "rt_turbo_qam", "1" },
 	{ "rt_airtimefairness", "0" },
 #endif
@@ -483,11 +484,13 @@ struct nvram_pair router_defaults[] = {
 	{ "scutclient_debug", "0" },
 	{ "scutclient_hostname", "Lenovo-PC" },
 	{ "scutclient_server_auth_ip", "202.38.210.131" },
+	{ "scutclient_skip_udp_hb", "0" },
 	{ "scutclient_version", "4472434f4d0096022a" },
 	{ "scutclient_hash", "2ec15ad258aee9604b18f2f8114da38db16efd00" },
 	{ "scutclient_username", "" },
 	{ "scutclient_password", "" },
 	{ "scutclient_watchcat", "1" },
+	{ "scutclient_wdg_force", "1" },
 
 	/* ttyd related */
 	{ "ttyd_enable", "0" },
@@ -642,8 +645,8 @@ struct nvram_pair router_defaults[] = {
 	{ "sw_mode", "1" },
 #endif
 
-	{ "telnetd", "1" },
-	{ "sshd_enable", "0" },
+	{ "telnetd", "0" },
+	{ "sshd_enable", "1" },
 	{ "wins_enable", "0" },
 	{ "lltd_enable", "1" },
 	{ "adsc_enable", "0" },
@@ -717,9 +720,13 @@ struct nvram_pair router_defaults[] = {
 #endif
 
 #if defined(CONFIG_RALINK_MT7621) || (defined(CONFIG_RALINK_MT7620) && !defined(BOARD_N14U))
-	{ "hw_nat_mode", "4" },
+#if defined(USE_MT7615_AP) // hwnat is disabled by default
+	{ "hw_nat_mode", "2" },
 #else
 	{ "hw_nat_mode", "4" },
+#endif
+#else
+	{ "hw_nat_mode", "1" },
 #endif
 	{ "sw_nat_mode", "0" },
 	{ "sfe_enable", "0" },

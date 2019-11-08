@@ -26,6 +26,7 @@ SAMBA_ENABLED=n
 ARIA2_ENABLED=n
 SOFTETHERVPN_ENABLE=n
 SHADOWSOCKS_ENABLE=n
+FRP_ENABLE=n
 
 ifneq ($(CONFIG_FIRMWARE_INCLUDE_OPENSSH),y)
 ifeq ($(CONFIG_FIRMWARE_INCLUDE_DROPBEAR),y)
@@ -85,6 +86,10 @@ ifneq ($(filter y,$(CONFIG_FIRMWARE_INCLUDE_SSSERVER) $(CONFIG_FIRMWARE_INCLUDE_
 SHADOWSOCKS_ENABLE=y
 endif
 
+ifneq ($(filter y,$(CONFIG_FIRMWARE_INCLUDE_FRPC) $(CONFIG_FIRMWARE_INCLUDE_FRPS)),)
+FRP_ENABLE=y
+endif
+
 dir_y =
 dir_n =
 dir_  =
@@ -107,6 +112,7 @@ dir_y						+= networkmap
 dir_y						+= httpd
 dir_y						+= www
 dir_y						+= rc
+dir_$(CONFIG_FIRMWARE_INCLUDE_ANTFS)		+= antfs
 dir_$(CONFIG_FIRMWARE_INCLUDE_NAPT66)		+= napt66
 dir_$(CONFIG_FIRMWARE_INCLUDE_SFE)		+= shortcut-fe
 dir_y						+= infosvr
@@ -136,13 +142,16 @@ dir_$(CONFIG_FIRMWARE_INCLUDE_TCPDUMP)		+= tcpdump
 dir_$(CONFIG_FIRMWARE_INCLUDE_MTR)		+= mtr
 dir_$(CONFIG_FIRMWARE_INCLUDE_SOCAT)	+= socat
 dir_$(CONFIG_FIRMWARE_INCLUDE_SRELAY)	+= srelay
+dir_$(CONFIG_FIRMWARE_INCLUDE_TUNSAFE) += tunsafe
 ifeq ($(CONFIG_FIRMWARE_INCLUDE_SMBD36),y)
 dir_$(SAMBA_ENABLED)				+= samba36
+dir_y							+= wsdd2
 else
 dir_$(SAMBA_ENABLED)				+= samba3
 endif
 dir_$(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS)	+= chnroute
 dir_$(CONFIG_FIRMWARE_INCLUDE_TTYD)		+= ttyd
+dir_$(FRP_ENABLE)				+= frp
 dir_$(SOFTETHERVPN_ENABLE)			+= softethervpn
 dir_$(CONFIG_FIRMWARE_INCLUDE_SCUTCLIENT)         += scutclient
 dir_$(CONFIG_FIRMWARE_INCLUDE_VLMCSD)			+= vlmcsd
@@ -154,6 +163,7 @@ dir_$(CONFIG_FIRMWARE_INCLUDE_DOGCOM)			+= dogcom
 dir_$(CONFIG_FIRMWARE_INCLUDE_IPERF3)			+= iperf3
 dir_$(CONFIG_FIRMWARE_INCLUDE_MINIEAP)			+= minieap
 dir_$(CONFIG_FIRMWARE_INCLUDE_NJIT_CLIENT)		+= njit-client
+dir_$(CONFIG_FIRMWARE_INCLUDE_MENTOHUST)		+= mentohust
 
 ifdef CONFIG_BLK_DEV_SD
 dir_$(CONFIG_FIRMWARE_INCLUDE_HDPARM)		+= hdparm
@@ -170,7 +180,10 @@ dir_$(CONFIG_FIRMWARE_INCLUDE_DUMP1090)	+= dump1090
 endif
 
 ifeq ($(STORAGE_ENABLED),y)
-dir_y						+= nfsd
+dir_$(CONFIG_FIRMWARE_INCLUDE_NFSD)		+= nfs-utils
+ifneq (,$(filter y,$(CONFIG_FIRMWARE_INCLUDE_NFSD) $(CONFIG_FIRMWARE_INCLUDE_NFSC)))
+dir_y						+= rpcbind
+endif
 dir_y						+= optware
 dir_y						+= util-linux
 dir_$(FS_EXT_ENABLED)				+= e2fsprogs

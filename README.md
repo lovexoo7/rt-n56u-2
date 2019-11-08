@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/hanwckf/rt-n56u.svg?branch=master)](https://travis-ci.org/hanwckf/rt-n56u)
+[![Build Status](https://travis-ci.com/hanwckf/rt-n56u.svg?branch=master)](https://travis-ci.com/hanwckf/rt-n56u)
+![GitHub All Releases](https://img.shields.io/github/downloads/hanwckf/rt-n56u/total)
+[![release](https://img.shields.io/github/release/hanwckf/rt-n56u.svg)](https://github.com/hanwckf/rt-n56u/releases)
 
 # README #
 
@@ -31,7 +33,7 @@ Contributors of this project are not responsible for what happens next.
 - [aria2](https://github.com/aria2/aria2)可选使用较新版本的预编译程序 ```CONFIG_FIRMWARE_INCLUDE_ARIA2_NEW_PREBUILD_BIN```
 - aria2前端更换为[AriaNg](https://github.com/mayswind/AriaNg)
 - [curl](https://github.com/curl/curl)可选编译可执行程序```CONFIG_FIRMWARE_INCLUDE_CURL```
-- 使用了[PROMETHEUS](http://pm.freize.net/index.html)提供的部分补丁，包括新版本的类库、软件包和WIFI驱动补丁```CONFIG_APPLY_PROMETHEUS_WIFI_DRIVER_PATCH```
+- 使用了[PROMETHEUS](http://pm.freize.net/index.html)提供的部分补丁，包括新版本的类库、软件包和WIFI驱动补丁
 - 使用了[Linaro1985/padavan-ng](https://github.com/Linaro1985/padavan-ng)的部分软件包
 - 集成以下软件
 >- [scutclient](https://github.com/hanwckf/scutclient) ```CONFIG_FIRMWARE_INCLUDE_SCUTCLIENT```
@@ -58,20 +60,35 @@ Contributors of this project are not responsible for what happens next.
 >- [mtr](https://github.com/traviscross/mtr) ```CONFIG_FIRMWARE_INCLUDE_MTR```
 >- [socat](http://www.dest-unreach.org/socat) ```CONFIG_FIRMWARE_INCLUDE_SOCAT```
 >- [srelay](https://socks-relay.sourceforge.io) ```CONFIG_FIRMWARE_INCLUDE_SRELAY```
+>- [mentohust](https://github.com/hanwckf/mentohust) ```CONFIG_FIRMWARE_INCLUDE_MENTOHUST```
+>- [frpc](https://github.com/fatedier/frp) ```CONFIG_FIRMWARE_INCLUDE_FRPC```
+>- [frps](https://github.com/fatedier/frp) ```CONFIG_FIRMWARE_INCLUDE_FRPS```
+>- [tunsafe](https://github.com/TunSafe/TunSafe) ```CONFIG_FIRMWARE_INCLUDE_TUNSAFE```
+
 - 已适配除官方适配外的以下机型
->- WR1200JS (128M,USB)
->- NEWIFI3 (512M,USB)
->- K2/PSG1218 (64M)
->- K2P_DRV/K2P_nano (128M)
->- MZ-R13 (64M)
->- MZ-R13P (64M)
->- HC5661A (128M)
->- OYE-001 (128M,USB)
->- MI-MINI (未测试,128M,USB)
->- MI-3 (未测试,128M,USB)
->- 5K-W20 (未测试,64M,USB)
->- JCG-AC860M (256M,USB)
->- DIR-882 (128M,USB)
+>- WR1200JS (USB)
+>- NEWIFI3 (USB)
+>- PSG1218
+>- K2P
+>- K2P-USB (USB)
+>- MZ-R13
+>- MZ-R13P
+>- HC5661A
+>- OYE-001 (USB)
+>- MI-MINI (USB)
+>- MI-3 (USB)
+>- 5K-W20 (USB)
+>- JCG-AC860M (USB)
+>- JCG-836PRO (USB)
+>- DIR-882 (USB)
+>- DIR-878
+>- RT-AC1200GU (USB)
+>- XY-C1 (USB)
+>- NEWIFI-MINI (USB)
+>- HC5861B
+>- 360P2 (USB)
+>- MR2600 (USB)
+>- PSG1208
 
 ***
 
@@ -81,7 +98,7 @@ Contributors of this project are not responsible for what happens next.
 ```shell
 sudo apt-get update
 sudo apt-get install unzip libtool curl cmake gperf gawk flex bison nano \
-git python-docutils gettext automake autopoint texinfo build-essential \
+git python-docutils gettext automake autopoint texinfo build-essential help2man \
 pkg-config zlib1g-dev libgmp3-dev libmpc-dev libmpfr-dev libncurses5-dev libltdl-dev
 ```
 * 克隆源码
@@ -92,8 +109,8 @@ git clone --depth=1 https://gitee.com/hanwckf/rt-n56u.git /opt/rt-n56u
 * 编译工具链
 ```shell
 cd /opt/rt-n56u/toolchain-mipsel
-./clean_sources
-./build_toolchain_3.4.x
+./clean_toolchain
+./build_toolchain
 ```
 * (可选)修改机型配置文件
 ```shell

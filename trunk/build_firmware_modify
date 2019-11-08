@@ -15,9 +15,9 @@ export ROOTDIR=$ROOTDIR
 kernel_id="3.4.x"
 kernel_cf=""
 kernel_tf=""
-uclibc_id="0.9.33.2"
+uclibc_id="uClibc-ng-1.0.32"
 uclibc_cf=""
-uclibc_tf="$ROOTDIR/libc/uClibc-${uclibc_id}/.config"
+uclibc_tf="$ROOTDIR/libc/${uclibc_id}/.config"
 busybox_id="1.24.x"
 busybox_cf="$ROOTDIR/configs/boards/busybox.config"
 busybox_tf="$ROOTDIR/user/busybox/busybox-${busybox_id}/.config"
@@ -96,6 +96,8 @@ fi
 
 if [ "$CONFIG_FIRMWARE_TYPE_ROOTFS_IN_RAM" = "y" ] ; then
 	kernel_cf="${kernel_cd}/kernel-${kernel_id}.ram.config"
+elif [ -n "$CONFIG_FIRMWARE_KERNEL_CONFIG" ]; then
+	kernel_cf="${kernel_cd}/$CONFIG_FIRMWARE_KERNEL_CONFIG"
 else
 	kernel_cf="${kernel_cd}/kernel-${kernel_id}.config"
 fi
@@ -157,21 +159,6 @@ rm -rf "$dir_wifi_dst/mt7628"
 rm -rf "$dir_wifi_dst/mt7615"
 mkdir -p "$dir_wifi_dst/mt7615/embedded"
 cp -f "$dir_wifi_src/rtpci/4.4.2.1/mt7615/embedded/Kconfig" "$dir_wifi_dst/mt7615/embedded/Kconfig"
-
-PATCH_DIR="${ROOTDIR}/PROMETHEUS/wifi_patch"
-if [ "$CONFIG_APPLY_PROMETHEUS_WIFI_DRIVER_PATCH" = "y" ] && [ ! -f "$dir_wifi_src/.patched_by_PROMETHEUS" ] ; then
-	for p in $(ls ${PATCH_DIR} |sort -n) ; do
-		echo "apply PROMETHEUS wifi patch: $p"
-		patch -p2 -i "${PATCH_DIR}/$p"
-	done
-	touch "$dir_wifi_src/.patched_by_PROMETHEUS"
-elif [ "$CONFIG_APPLY_PROMETHEUS_WIFI_DRIVER_PATCH" != "y" ] && [ -f "$dir_wifi_src/.patched_by_PROMETHEUS" ] ; then
-	for p in $(ls ${PATCH_DIR} |sort -rn) ; do
-		echo "revert PROMETHEUS wifi patch: $p"
-		patch -Rp2 -i "${PATCH_DIR}/$p"
-	done
-	rm -f "$dir_wifi_src/.patched_by_PROMETHEUS"
-fi
 
 if [ -n "$CONFIG_RT2860V2_AP" ] ; then
 	dir_wifi_ver="2.7.X.X"
@@ -242,6 +229,9 @@ if [ -n "$CONFIG_MT7628_AP" ] ; then
 fi
 if [ -n "$CONFIG_MT7615_AP" ] ; then
 	dir_wifi_ver="4.4.2.1"
+	if [ "$CONFIG_FIRMWARE_WIFI_DRIVER" = "5.0.3.0" ] || [ "$CONFIG_FIRMWARE_WIFI2_DRIVER" = "5.0.3.0" ] || [ "$CONFIG_FIRMWARE_WIFI5_DRIVER" = "5.0.3.0" ]; then
+		dir_wifi_ver="5.0.3.0"
+	fi
 	cp -rfL "$dir_wifi_src/rtpci/$dir_wifi_ver/mt7615" "$dir_wifi_dst/"
 	cp -rfL "$dir_wifi_src/rtpci/$dir_wifi_ver/mt7615_ap" "$dir_wifi_dst/"
 fi

@@ -2312,7 +2312,7 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 	int has_5g_mumimo = 1;
 	int has_5g_txbf = 1;
 	int has_5g_band_steering = 1;
-#if defined (BOARD_K2P)
+#if defined (BOARD_MT7615_DBDC)
 	int has_5g_160mhz = 0;
 #else
 	int has_5g_160mhz = 1;
@@ -2345,7 +2345,7 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 #else
 	int has_sfe = 0;
 #endif
-#if defined (BOARD_K2P)
+#if defined (BOARD_MT7615_DBDC)
 	int has_lan_ap_isolate = 0;
 #else
 	int has_lan_ap_isolate = 1;
@@ -2416,6 +2416,7 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 		"function support_ephy_w1000() { return %d;}\n"
 		"function support_ephy_l1000() { return %d;}\n"
 		"function support_2g_inic_mii() { return %d;}\n"
+		"function support_2g_radio() { return %d;}\n"
 		"function support_5g_radio() { return %d;}\n"
 		"function support_5g_11ac() { return %d;}\n"
 		"function support_5g_wid() { return %d;}\n"
@@ -2451,6 +2452,7 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 		BOARD_HAS_EPHY_W1000,
 		BOARD_HAS_EPHY_L1000,
 		has_inic_mii,
+		BOARD_HAS_2G_RADIO,
 		BOARD_HAS_5G_RADIO,
 		has_5g_vht,
 		wid_5g,
@@ -2918,11 +2920,16 @@ void get_wifidata(struct wifi_stats *st, int is_5ghz)
 	}
 	else
 	{
+#if BOARD_HAS_2G_RADIO
 		st->radio = (nvram_get_int("mlme_radio_rt")) ? 1 : 0;
 		if (st->radio)
 			st->ap_guest = is_interface_up(IFNAME_2G_GUEST);
 		else
 			st->ap_guest = 0;
+#else
+		st->radio = 0;
+		st->ap_guest = 0;
+#endif
 	}
 }
 
@@ -3139,6 +3146,12 @@ apply_cgi(const char *url, webs_t wp)
 	else if (!strcmp(value, " Reboot "))
 	{
 		sys_reboot();
+		return 0;
+	}
+	else if (!strcmp(value, " Shutdown "))
+	{
+		system("shutdown");
+		websRedirect(wp, current_url);
 		return 0;
 	}
 	else if (!strcmp(value, " RestoreNVRAM "))

@@ -107,10 +107,6 @@ typedef struct _RT_802_11_MAC_ENTRY {
 	unsigned int	ConnectedTime;
 	MACHTTRANSMIT_SETTING	TxRate;
 	unsigned int	LastRxRate;
-#if defined (USE_MT7615_AP) && !defined (WITHOUT_KERNEL)
-	signed short	StreamSnr[3];
-	signed short	SoundingRespSnr[3];
-#endif
 } RT_802_11_MAC_ENTRY, *PRT_802_11_MAC_ENTRY;
 
 typedef struct _RT_802_11_MAC_TABLE {
@@ -222,6 +218,9 @@ typedef struct _PAIR_CHANNEL_FREQ_ENTRY
 #if defined (CONFIG_RALINK_MT7621)
 #define OFFSET_MAC_GMAC0	0xE000
 #define OFFSET_MAC_GMAC2	0xE006
+#elif defined (BOARD_360P2)
+#define OFFSET_MAC_GMAC0	0xFFE8
+#define OFFSET_MAC_GMAC2	0xFFEE
 #else
 #define OFFSET_MAC_GMAC0	0x0028
 #define OFFSET_MAC_GMAC2	0x0022
